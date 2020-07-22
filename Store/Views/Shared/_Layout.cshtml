@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" asp-href-include="~/lib/font-awesome/css/*.css" />
+    <title>@ViewData["Title"] - Store</title>
+    <style>
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 62px;
+            width: 0px;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #main {
+            /* If you want a transition effect*/
+            padding: 20px;
+        }
+
+        .preload * {
+            -webkit-transition: none !important;
+            -moz-transition: none !important;
+            -ms-transition: none !important;
+            -o-transition: none !important;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+    <script>
+        function openNav() {
+            document.getElementById("categories").style.width = "250px";
+            document.getElementById("main").style.paddingLeft = "260px";
+            if (typeof (Storage) !== "undefined") {
+                // Save the state of the sidebar as "open"
+                localStorage.setItem("sidebar", "opened");
+            }
+        }
+
+        /* Set the width of the sidebar to 0 and the left margin of the page content to 0 */
+        function closeNav() {
+            document.getElementById("categories").style.width = "0";
+            document.getElementById("main").style.paddingLeft = "0";
+            if (typeof (Storage) !== "undefined") {
+                // Save the state of the sidebar as "open"
+                localStorage.setItem("sidebar", "closed");
+            }
+
+        }
+
+        function toggleNav() {
+            (localStorage.getItem("sidebar") == "closed" || localStorage.getItem("sidebar") == null) ? openNav() : closeNav();
+        }
+
+        window.onload = load;
+
+        function load() {
+            $("body").removeClass("preload");
+        }
+    </script>
+</head>
+<body class="preload">
+    <header>
+        <div class="bg-dark p-2 row" style="        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 62px;
+        width: 100vw;
+        margin: 0;
+        padding: 0;
+        z-index: 10">
+            <div class="col-md-auto">
+                <h4 class="text-white">
+                    Store                <a class="btn btn-sm btn-secondary m-1" onclick="toggleNav()"><i class="fa fa-bars"></i></a>
+                </h4>
+                
+            </div>
+            <div class="col"><form class="form-inline d-flex justify-content-center md-form form-sm m-1 w-auto" asp-action="Search"
+      asp-controller="Product"
+      asp-route-productPage="1">
+    <i class="fas fa-search" aria-hidden="true"></i>
+    <input class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search"
+           name="searchString">
+</form></div>
+            <div class="btn-toolbar mb-3">
+                @if (User?.Identity?.IsAuthenticated ?? false)
+                {
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-primary dropdown-toggle m-1" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">
+                            <i class="fa fa-user-circle"></i>
+                            @User.Identity.Name
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" asp-controller="Account" asp-action="Info">Your Account</a>
+                            <a class="dropdown-item" href="#">Orders</a>
+                            <a class="dropdown-item" href="#">Inquiries</a>
+                            <a class="dropdown-item" href="#">Buying Lists</a>
+                            <a class="dropdown-item" href="#">Products to evaluate</a>
+                            <a class="dropdown-item" asp-controller="Account" asp-action="Logout">Log Out</a>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <a class="btn btn-sm btn-primary m-1" asp-action="Login" asp-controller="Account"><i class="fa fa-user-circle"></i>Log In</a>
+                }
+
+                @await Component.InvokeAsync("CartSummary")
+
+            </div>
+        </div>
+    </header>
+
+    <div id="categories" class="sidebar bg-dark text-center" style="transition: 0.5s">
+        @await Component.InvokeAsync("NavigationMenu")
+    </div>
+    <div id="main" class="pb-3 pr-2" style="padding-left: 0px; padding-top: 70px; transition:padding-left .5s">
+        @RenderBody()
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+    <script type="text/javascript">
+        // If localStorage is supported by the browser
+        if (typeof (Storage) !== "undefined") {
+            // If we need to open the bar
+            if (localStorage.getItem("sidebar") == "opened") {
+                // Open the bar
+                document.getElementById("categories").style.width = "250px";
+                document.getElementById("main").style.paddingLeft = "260px";
+            }
+
+        }
+    </script>
+</body>
+</html>

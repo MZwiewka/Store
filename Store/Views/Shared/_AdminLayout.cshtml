@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" asp-href-include="lib/bootstrap/dist/css/*.min.css" />
+    <title>@ViewBag.Title</title>
+    <style>
+        .input-validation-error {
+            border-color: red;
+            background-color: #fee;
+        }
+
+        body {
+            height: 100%
+        }
+
+        html {
+            height: 100%
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 62px;
+            left: 0;
+            width: 250px;
+            height: 100vh;
+        }
+
+        .btn:active {
+        }
+
+        .btn:hover {
+            -webkit-box-shadow: 0px 0px 4px 2px rgba(0,0,0,0.88);
+            -moz-box-shadow: 0px 0px 4px 2px rgba(0,0,0,0.88);
+            box-shadow: 0px 0px 4px 2px rgba(0,0,0,0.88);
+        }
+
+        .btn:focus {
+        }
+    </style>
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="bg-info p-2 row" style="position: fixed; left: 0; top: 0; width: 100%; width: 100vw; margin: 0; padding: 0;">
+            <div class="col">
+                <h4>@ViewBag.Title</h4>
+            </div>
+            <div class="btn-toolbar">
+                <a class="btn btn btn-primary m-1" asp-action="Logout" asp-controller="Account">Log Out</a>
+                <a class="btn btn btn-primary m-1" asp-controller="Product" asp-action="List">Back</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="sidebar bg-dark text-center">
+        @await Component.InvokeAsync("AdminNavigationMenu")
+    </div>
+
+
+    <main role="main" class="pb-3 pr-2" style="padding-left: 260px; padding-top: 62px">
+        @RenderBody()
+    </main>
+
+
+
+    @if (TempData["message"] != null)
+    {
+        <div class="alert alert-success">@TempData["message"]</div>
+    }
+</body>
+</html>
+
+
