@@ -12,5 +12,6 @@ namespace Store.Models.ViewModels
         public PagingInfo PagingInfo { get; set; }
         public string CurrentCategory { get; set; }
         public string SearchedString { get; set; }
+        public string SortOrder { get; set; }
     }
 }

@@ -20,24 +20,42 @@ namespace Store.Controllers
             repository = repo;
         }
 
-        public ViewResult List(string category, int productPage = 1) 
-            => View(new ProductsListViewModel { 
-                Products = repository.Products
-                .Where(p=> category == null || p.Category == category)
-                .OrderBy(p => p.ProductID)
-                .Skip((productPage - 1) * PageSize)
-                .Take(PageSize), 
-                PagingInfo = new PagingInfo { 
-                    CurrentPage = productPage, 
-                    ItemsPerPage = PageSize, 
-                    TotalItems = category == null ? 
-                        repository.Products.Count() : 
-                        repository.Products.Where(e => 
-                            e.Category == category).Count()
-                }, 
+        public ViewResult List(string category, string sortOrder = "Default", int productPage = 1)
+        {
+            var products = repository.Products
+                  .Where(p => category == null || p.Category == category);
+
+            switch (sortOrder)
+            {
+                case "Price descending":
+                    products = products.OrderByDescending(p => p.Price);
+                    break;
+                case "Price ascending":
+                    products = products.OrderBy(p => p.Price);
+                    break;
+                case "Default":
+                    products = products.OrderBy(p => p.ProductID);
+                    break;
+            }
+
+            return View(new ProductsListViewModel
+            {
+                Products = products.Skip((productPage - 1) * PageSize)
+                  .Take(PageSize),
+                PagingInfo = new PagingInfo
+                {
+                    CurrentPage = productPage,
+                    ItemsPerPage = PageSize,
+                    TotalItems = category == null ?
+                          repository.Products.Count() :
+                          repository.Products.Where(e =>
+                              e.Category == category).Count()
+                },
                 CurrentCategory = category,
-                SearchedString = null
+                SearchedString = null,
+                SortOrder = sortOrder
             });
+        }
 
         public ViewResult Info(int productID) =>
             View(repository.Products.FirstOrDefault(p => p.ProductID == productID));

@@ -34,7 +34,7 @@ namespace Store.Models
                     .FirstOrDefault(p => p.ProductID == product.ProductID);
                 if (dbEntry != null)
                 {           
-                    if (Directory.CreateDirectory(environment.ContentRootPath + "\\MyStaticFiles\\Images\\Products\\" + dbEntry.Name).Exists == true && product.Name != dbEntry.Name)
+                    if (Directory.Exists(environment.ContentRootPath + "\\MyStaticFiles\\Images\\Products\\" + dbEntry.Name) && product.Name != dbEntry.Name)
                     {
                         Directory.Move(environment.ContentRootPath + "\\MyStaticFiles\\Images\\Products\\" + dbEntry.Name, environment.ContentRootPath + "\\MyStaticFiles\\Images\\Products\\" + product.Name);
                         product.ImagePath = "/MyImages/Products/" + product.Name + "/picture.jpg";
