@@ -84,12 +84,11 @@ namespace Store
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            app.UseFileServer(new FileServerOptions()
+            app.UseStaticFiles(new StaticFileOptions()
             {
                 FileProvider = new PhysicalFileProvider(
                     Path.Combine(Directory.GetCurrentDirectory(), @"MyStaticFiles/Images/")),
                 RequestPath = new PathString("/MyImages"),
-                EnableDirectoryBrowsing = true
             });
 
             app.UseSession();

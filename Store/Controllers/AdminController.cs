@@ -62,8 +62,8 @@ namespace Store.Controllers
                         img.CopyTo(x);
 
                     }
-                }  
-                else
+                }
+                else if (product.ImagePath == null)
                 {
                     product.ImagePath = "/MyImages/Products/default.png";
                 }
