@@ -12,6 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using Store.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace Store
 {
@@ -81,6 +83,15 @@ namespace Store
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            app.UseFileServer(new FileServerOptions()
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), @"MyStaticFiles/Images/")),
+                RequestPath = new PathString("/MyImages"),
+                EnableDirectoryBrowsing = true
+            });
+
             app.UseSession();
 
             app.UseRouting();
@@ -94,7 +105,11 @@ namespace Store
                 endpoints.MapControllerRoute(
                    name: null,
                    pattern: "{category}/Page/{productPage}",
-                   defaults: new { Controller = "Product", action = "List" });
+                   defaults: new { Controller = "Product", action = "List"});
+                endpoints.MapControllerRoute(
+                  name: null,
+                  pattern: "",
+                  defaults: new { Controller = "Product", action = "List" });
                 endpoints.MapControllerRoute(
                     name: null,
                     pattern: "Page/{productPage}",
@@ -111,7 +126,7 @@ namespace Store
                     name: null,
                     pattern: "{controller}/{action}/{id?}");
             });
-            //Seed.EnsurePopulated(app);
+            Seed.EnsurePopulated(app);
             //IdentitySeed.EnsurePopulated(app);
         }
     }

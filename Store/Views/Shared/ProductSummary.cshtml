@@ -1,34 +1,34 @@
 ﻿@model Product
 
 <div class="card m-1 p-1">
-        <div class="row">
-            <div class="col-md-auto" style="margin-right:0; padding-right:0">
-                <img src="https://www.nvidia.com/content/dam/en-zz/Solutions/geforce/home/Graphics-card-406x320px.jpg" class="img-responsive" style="width: 200px">
-            </div>
-            <div class="col">
-                <div class="bg-light p-1">
-                    <h4>
-                        <a class="btn font-weight-bold text-uppercase" asp-action="Info"
-                      asp-controller="Product" asp-route-productID="@Model.ProductID">@Model.Name</a>
-                        <span class="badge badge-dark" style="        float: right
-">
-                            <small>@Model.Price.ToString("c")</small>
-                        </span>
-                    </h4>
-                </div>
-                <form id="@Model.ProductID" asp-action="AddToCart"
-                      asp-controller="Cart" method="post">
-                    <input type="hidden" asp-for="ProductID" />
-                    <input type="hidden" name="returnUrl"
-                           value="@ViewContext.HttpContext.Request.PathAndQuery()" />
-                    <span class="card-text ml-2 p-2">
-                        @Model.Description
-                        <button type="submit"
-                                class="btn btn-success btn-sm pull-right" style="float:right">
-                            Add To Cart
-                        </button>
-                    </span>
-                </form>
-            </div>
+    <div class="row">
+        <div class="col-md-auto" style="margin-right:0; padding-right:0">
+            <img src="@Model.ImagePath" class="img-responsive" style="width: 200px">
         </div>
+        <div class="col">
+            <div class="bg-light p-1">
+                <h4>
+                    <a class="btn font-weight-bold text-uppercase" asp-action="Info"
+                       asp-controller="Product" asp-route-productID="@Model.ProductID">@Model.Name</a>
+                    <span class="badge badge-dark" style="        float: right
+">
+                        <small>@Model.Price.ToString("c")</small>
+                    </span>
+                </h4>
+            </div>
+            <form id="@Model.ProductID" asp-action="AddToCart"
+                  asp-controller="Cart" method="post">
+                <input type="hidden" asp-for="ProductID" />
+                <input type="hidden" name="returnUrl"
+                       value="@ViewContext.HttpContext.Request.PathAndQuery()" />
+                <span class="card-text ml-2 p-2">
+                    @Model.Description
+                    <button type="submit"
+                            class="btn btn-success btn-sm pull-right" style="float:right">
+                        Add To Cart
+                    </button>
+                </span>
+            </form>
+        </div>
+    </div>
 </div>

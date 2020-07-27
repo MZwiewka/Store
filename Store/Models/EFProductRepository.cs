@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace Store.Models
 {
-    public class EFProductRepository : IProductRepository 
+    public class EFProductRepository : IProductRepository
     {
         private ApplicationDbContext context;
 
-        public EFProductRepository (ApplicationDbContext ctx)
+        public EFProductRepository(ApplicationDbContext ctx)
         {
             context = ctx;
         }
@@ -32,6 +32,9 @@ namespace Store.Models
                     dbEntry.Description = product.Description;
                     dbEntry.Price = product.Price;
                     dbEntry.Category = product.Category;
+                    if (dbEntry.ImagePath!= product.ImagePath && product.ImagePath != "/MyImages/Products/default.jpg") { 
+                    dbEntry.ImagePath = product.ImagePath;
+                        }
                 }
             }
             context.SaveChanges();

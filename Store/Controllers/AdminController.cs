@@ -7,6 +7,10 @@ using Store.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System.Drawing;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 
 namespace Store.Controllers
 {
@@ -20,8 +24,9 @@ namespace Store.Controllers
         private IPasswordHasher<User> passwordHasher;
         private IUserValidator<User> userValidator;
         private RoleManager<IdentityRole> roleManager;
+        private IWebHostEnvironment environment;
 
-        public AdminController(IProductRepository repo, UserManager<User> uManager, IUserValidator<User> uValidator, IPasswordValidator<User> pValidator, IPasswordHasher<User> pHasher, RoleManager<IdentityRole> rManager)
+        public AdminController(IProductRepository repo, UserManager<User> uManager, IUserValidator<User> uValidator, IPasswordValidator<User> pValidator, IPasswordHasher<User> pHasher, RoleManager<IdentityRole> rManager, IWebHostEnvironment env)
         {
             repository = repo;
             userManager = uManager;
@@ -29,6 +34,7 @@ namespace Store.Controllers
             passwordValidator = pValidator;
             passwordHasher = pHasher;
             roleManager = rManager;
+            environment = env;
         }
 
         //Products
@@ -41,10 +47,26 @@ namespace Store.Controllers
             View(repository.Products.FirstOrDefault(p => p.ProductID == productID));
 
         [HttpPost]
-        public IActionResult EditProduct(Product product)
+        public IActionResult EditProduct(Product product, IFormFile img)
         {
             if (ModelState.IsValid)
             {
+                if (img != null)
+                {
+                    string folderPath = environment.ContentRootPath;
+                    string imagePath = folderPath + "\\MyStaticFiles\\Images\\Products\\" + product.Name;
+                    DirectoryInfo di = Directory.CreateDirectory(imagePath);
+                    product.ImagePath = "/MyImages/Products/" + product.Name + "/picture.jpg";
+                    using (FileStream x = new FileStream(imagePath + "\\picture.jpg", FileMode.Create, FileAccess.Write))
+                    {
+                        img.CopyTo(x);
+
+                    }
+                }  
+                else
+                {
+                    product.ImagePath = "/MyImages/Products/default.png";
+                }
                 repository.SaveProduct(product);
                 TempData["message"] = $"{product.Name} has been saved";
                 return RedirectToAction("ListProducts");
@@ -75,17 +97,17 @@ namespace Store.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateRole([Required] string name)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 IdentityResult result = await roleManager.CreateAsync(new IdentityRole(name));
-                if(result.Succeeded)
+                if (result.Succeeded)
                 {
                     return RedirectToAction("ListRoles");
                 }
                 else
                 {
                     AddErrorsFromResult(result);
-                }  
+                }
             }
             return View(name);
         }
@@ -95,13 +117,13 @@ namespace Store.Controllers
             IdentityRole role = await roleManager.FindByIdAsync(id);
             List<User> members = new List<User>();
             List<User> nonmembers = new List<User>();
-            foreach(User user in userManager.Users)
+            foreach (User user in userManager.Users)
             {
                 var list = await userManager.IsInRoleAsync(user, role.Name) ? members : nonmembers;
                 list.Add(user);
             }
 
-            return View(new EditRole {Role = role, Members = members, NonMembers = nonmembers});
+            return View(new EditRole { Role = role, Members = members, NonMembers = nonmembers });
         }
 
         [HttpPost]
@@ -186,18 +208,18 @@ namespace Store.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUser(CreateUser model)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 User user = new User
                 {
                     UserName = model.Name,
                     Email = model.Email
-               
+
                 };
 
                 IdentityResult result = await userManager.CreateAsync(user, model.Password);
 
-                if(result.Succeeded)
+                if (result.Succeeded)
                 {
                     return RedirectToAction("ListUsers");
                 }
@@ -287,7 +309,7 @@ namespace Store.Controllers
             {
                 IdentityResult result = await userManager.DeleteAsync(user);
 
-                if(result.Succeeded)
+                if (result.Succeeded)
                 {
                     return RedirectToAction("ListUsers");
                 }

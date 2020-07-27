@@ -5,6 +5,14 @@
     <UserSecretsId>dce04222-5a57-4195-b969-876132aa1832</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Migrations\20200725140910_ImagesFixed.cs" />
+    <Compile Remove="Migrations\20200725140910_ImagesFixed.Designer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MyStaticFiles\Images\Products\default.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.7" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="3.1.5" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="3.1.5" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="3.1.5" />
@@ -13,6 +21,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.3" />
     <PackageReference Include="Moq" Version="4.14.1" />
+    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Migrations\ApplicationIdentityDb\" />
