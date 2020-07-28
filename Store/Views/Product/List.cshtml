@@ -1,23 +1,20 @@
 ﻿@model ProductsListViewModel
 
-<div class="dropdown">
-    <button class="btn btn-sm btn-primary dropdown-toggle m-1" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">
-        <span id="dropdown_title">@Model.SortOrder</span><span class="caret"></span>
+<div class="dropdown m-1">
+    <button class="btn btn-sm btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">
+        <span id="dropdown_title">Sorting</span>
     </button>
-    <ul ID="divNewNotifications" class="dropdown-menu boot" aria-labelledby="dropdownMenuButton">
-        <li>
+    <div class="dropdown-menu boot" aria-labelledby="dropdownMenuButton">
+
             <a class="dropdown-item" asp-controller="Product" asp-action="List" asp-route-category="@Model.CurrentCategory"
-               asp-route-productPage="1" , asp-route-sortOrder="Default">Default</a>
-        </li>
-        <li>
+               asp-route-productPage="1" asp-route-sortOrder="Default" asp-route-searchString="@Model.SearchedString">Default</a>
+
             <a class="dropdown-item" asp-controller="Product" asp-action="List" asp-route-category="@Model.CurrentCategory"
-               asp-route-productPage="1" , asp-route-sortOrder="Price ascending">Price ascending</a>
-        </li>
-        <li>
+               asp-route-productPage="1" asp-route-sortOrder="Price ascending" asp-route-searchString="@Model.SearchedString">Price ascending</a>
+
             <a class="dropdown-item" asp-controller="Product" asp-action="List" asp-route-category="@Model.CurrentCategory"
-               asp-route-productPage="1" , asp-route-sortOrder="Price descending">Price descending</a>
-        </li>
-    </ul>
+               asp-route-productPage="1" asp-route-sortOrder="Price descending" asp-route-searchString="@Model.SearchedString">Price descending</a>
+        </div>
 </div>
 
 
@@ -28,7 +25,7 @@
 
 <div page-model="@Model.PagingInfo" page-action="List" page-classes-enabled="true"
      page-class="btn" page-class-normal="btn-secondary"
-     page-class-selected="btn-primary" page-url-category="@Model.CurrentCategory" , page-url-sortOrder="@Model.SortOrder"
+     page-class-selected="btn-primary" page-url-category="@Model.CurrentCategory" , page-url-sortOrder="@Model.SortOrder" page-url-searchString="@Model.SearchedString"
      class="btn-group m-1">
 </div>
 

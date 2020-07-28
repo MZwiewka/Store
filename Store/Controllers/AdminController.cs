@@ -53,11 +53,10 @@ namespace Store.Controllers
             {
                 if (img != null)
                 {
-                    string folderPath = environment.ContentRootPath;
-                    string imagePath = folderPath + "\\MyStaticFiles\\Images\\Products\\" + product.Name;
-                    DirectoryInfo di = Directory.CreateDirectory(imagePath);
-                    product.ImagePath = "/MyImages/Products/" + product.Name + "/picture.jpg";
-                    using (FileStream x = new FileStream(imagePath + "\\picture.jpg", FileMode.Create, FileAccess.Write))
+                    string imagePath = $"{environment.ContentRootPath}\\MyStaticFiles\\Images\\Products\\{product.Name}";
+                    Directory.CreateDirectory(imagePath);
+                    product.ImagePath = $"/MyImages/Products/{product.Name}/picture.jpg";
+                    using (FileStream x = new FileStream($"{imagePath}\\picture.jpg", FileMode.Create, FileAccess.Write))
                     {
                         img.CopyTo(x);
 

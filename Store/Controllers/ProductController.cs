@@ -20,11 +20,15 @@ namespace Store.Controllers
             repository = repo;
         }
 
-        public ViewResult List(string category, string sortOrder = "Default", int productPage = 1)
+        public ViewResult List(string category, string searchString, string sortOrder = "Default", int productPage = 1)
         {
             var products = repository.Products
                   .Where(p => category == null || p.Category == category);
 
+            if(!String.IsNullOrEmpty(searchString))
+            {
+                products = products.Where(p => p.Name.Contains(searchString));
+            }
             switch (sortOrder)
             {
                 case "Price descending":
@@ -46,37 +50,15 @@ namespace Store.Controllers
                 {
                     CurrentPage = productPage,
                     ItemsPerPage = PageSize,
-                    TotalItems = category == null ?
-                          repository.Products.Count() :
-                          repository.Products.Where(e =>
-                              e.Category == category).Count()
+                    TotalItems = products.Count()
                 },
                 CurrentCategory = category,
-                SearchedString = null,
+                SearchedString = searchString,
                 SortOrder = sortOrder
             });
         }
 
         public ViewResult Info(int productID) =>
             View(repository.Products.FirstOrDefault(p => p.ProductID == productID));
-
-        public ViewResult Search(string searchString, int productPage = 1)
-           => View(new ProductsListViewModel
-           {
-               Products = repository.Products
-               .Where(p => p.Name.Contains(searchString))
-               .OrderBy(p => p.ProductID)
-               .Skip((productPage - 1) * PageSize)
-               .Take(PageSize),
-               PagingInfo = new PagingInfo
-               {
-                   CurrentPage = productPage,
-                   ItemsPerPage = PageSize,
-                   TotalItems = 
-                       repository.Products.Where(p => p.Name.Contains(searchString)).Count()
-               },
-               CurrentCategory = null,
-               SearchedString = searchString
-           });
     }
 }
