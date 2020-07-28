@@ -20,7 +20,7 @@ namespace Store.Controllers
             repository = repo;
         }
 
-        public ViewResult List(string category, string searchString, string sortOrder = "Default", int productPage = 1)
+        public ViewResult List(string category, string searchString, SortOrder sortOrder = SortOrder.Default, int productPage = 1)
         {
             var products = repository.Products
                   .Where(p => category == null || p.Category == category);
@@ -29,15 +29,16 @@ namespace Store.Controllers
             {
                 products = products.Where(p => p.Name.Contains(searchString));
             }
+
             switch (sortOrder)
             {
-                case "Price descending":
+                case SortOrder.Price_descending:
                     products = products.OrderByDescending(p => p.Price);
                     break;
-                case "Price ascending":
+                case SortOrder.Price_ascending:
                     products = products.OrderBy(p => p.Price);
                     break;
-                case "Default":
+                case SortOrder.Default:
                     products = products.OrderBy(p => p.ProductID);
                     break;
             }

@@ -5,16 +5,10 @@
         <span id="dropdown_title">Sorting</span>
     </button>
     <div class="dropdown-menu boot" aria-labelledby="dropdownMenuButton">
-
-            <a class="dropdown-item" asp-controller="Product" asp-action="List" asp-route-category="@Model.CurrentCategory"
-               asp-route-productPage="1" asp-route-sortOrder="Default" asp-route-searchString="@Model.SearchedString">Default</a>
-
-            <a class="dropdown-item" asp-controller="Product" asp-action="List" asp-route-category="@Model.CurrentCategory"
-               asp-route-productPage="1" asp-route-sortOrder="Price ascending" asp-route-searchString="@Model.SearchedString">Price ascending</a>
-
-            <a class="dropdown-item" asp-controller="Product" asp-action="List" asp-route-category="@Model.CurrentCategory"
-               asp-route-productPage="1" asp-route-sortOrder="Price descending" asp-route-searchString="@Model.SearchedString">Price descending</a>
-        </div>
+        <a class="dropdown-item" asp-controller="Product" asp-action="List" asp-route-searchString="@Model.SearchedString">Default</a>
+        <a class="dropdown-item" asp-controller="Product" asp-action="List" asp-route-searchString="@Model.SearchedString" asp-route-sortOrder=1>Price ascending</a>
+        <a class="dropdown-item" asp-controller="Product" asp-action="List" asp-route-searchString="@Model.SearchedString" asp-route-sortOrder=2>Price descending</a>
+    </div>
 </div>
 
 
@@ -25,7 +19,7 @@
 
 <div page-model="@Model.PagingInfo" page-action="List" page-classes-enabled="true"
      page-class="btn" page-class-normal="btn-secondary"
-     page-class-selected="btn-primary" page-url-category="@Model.CurrentCategory" , page-url-sortOrder="@Model.SortOrder" page-url-searchString="@Model.SearchedString"
+     page-class-selected="btn-primary" page-url-category="@Model.CurrentCategory" page-url-sortOrder="@Model.SortOrder" page-url-searchString="@Model.SearchedString"
      class="btn-group m-1">
 </div>
 
