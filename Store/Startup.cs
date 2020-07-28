@@ -80,7 +80,6 @@ namespace Store
                 app.UseHsts();
             }
 
-
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
