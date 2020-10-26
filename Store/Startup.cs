@@ -43,7 +43,7 @@ namespace Store
                     opts.AccessDeniedPath = "/AccessDeniedPathInfo";
                 });
 
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration["Data:StoreProducts:ConnectionString"]));
+            services.AddDbContext<ApplicationDbContext>(options => options.UseLazyLoadingProxies().UseSqlServer(Configuration["Data:StoreProducts:ConnectionString"]));
             services.AddDbContext<ApplicationIdentityDbContext>(options => options.UseSqlServer(Configuration["Data:StoreIdentity:ConnectionString"]));
 
             services.AddIdentity<User, IdentityRole>(opts =>
@@ -100,14 +100,11 @@ namespace Store
 
             app.UseEndpoints(endpoints =>
             {
+
                 endpoints.MapControllerRoute(
                    name: null,
                    pattern: "{category}/Page/{productPage}",
                    defaults: new { Controller = "Product", action = "List"});
-                endpoints.MapControllerRoute(
-                  name: null,
-                  pattern: "",
-                  defaults: new { Controller = "Product", action = "List" });
                 endpoints.MapControllerRoute(
                     name: null,
                     pattern: "Page/{productPage}",
@@ -116,6 +113,14 @@ namespace Store
                     name: null,
                     pattern: "{category}",
                     defaults: new { Controller = "Product", action = "List", productPage = 1 });
+                //endpoints.MapControllerRoute(
+                    //name: null,
+                    //pattern: "{controller}/{action}/{productID}",
+                    //defaults: new { Controller = "Product", action = "Info" });
+                //endpoints.MapControllerRoute(
+                    //name: null,
+                    //pattern: "",
+                    //defaults: new { Controller = "Product", action = "List" });
                 endpoints.MapControllerRoute(
                     name: null,
                     pattern: "",

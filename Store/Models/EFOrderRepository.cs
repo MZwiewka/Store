@@ -8,7 +8,7 @@ namespace Store.Models
 {
     public class EFOrderRepository : IOrderRepository
     {
-        private ApplicationDbContext context;
+        private readonly ApplicationDbContext context;
 
         public EFOrderRepository(ApplicationDbContext ctx)
         {

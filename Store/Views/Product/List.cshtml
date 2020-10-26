@@ -1,13 +1,27 @@
 ﻿@model ProductsListViewModel
 
-<div class="dropdown m-1">
-    <button class="btn btn-sm btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">
-        <span id="dropdown_title">Sorting</span>
-    </button>
-    <div class="dropdown-menu boot" aria-labelledby="dropdownMenuButton">
-        <a class="dropdown-item" asp-controller="Product" asp-action="List" asp-route-searchString="@Model.SearchedString">Default</a>
-        <a class="dropdown-item" asp-controller="Product" asp-action="List" asp-route-searchString="@Model.SearchedString" asp-route-sortOrder=1>Price ascending</a>
-        <a class="dropdown-item" asp-controller="Product" asp-action="List" asp-route-searchString="@Model.SearchedString" asp-route-sortOrder=2>Price descending</a>
+
+<div class="row m-1">
+    <div class="col p-0 mr-1 m-0">
+        <ol class="breadcrumb p-2">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            @if (@Model.CurrentCategory != null)
+            {
+                <li class="breadcrumb-item"><a href="/@Model.CurrentCategory">@Model.CurrentCategory</a></li>
+            }
+        </ol>
+    </div>
+    <div class="col-md-auto p-0 ml-1 m-0">
+        <div class="dropdown p-1">
+            <button class="btn btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">
+                <span id="dropdown_title">Sorting</span>
+            </button>
+            <div class="dropdown-menu boot dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" asp-controller="Product" asp-action="List" asp-route-searchString="@Model.SearchedString">Default</a>
+                <a class="dropdown-item" asp-controller="Product" asp-action="List" asp-route-searchString="@Model.SearchedString" asp-route-sortOrder=1>Price ascending</a>
+                <a class="dropdown-item" asp-controller="Product" asp-action="List" asp-route-searchString="@Model.SearchedString" asp-route-sortOrder=2>Price descending</a>
+            </div>
+        </div>
     </div>
 </div>
 

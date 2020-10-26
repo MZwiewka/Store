@@ -10,14 +10,14 @@ using Store.Models;
 namespace Store.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200728185607_Initial")]
-    partial class Initial
+    [Migration("20201020084402_x")]
+    partial class x
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.3")
+                .HasAnnotation("ProductVersion", "3.1.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -44,6 +44,26 @@ namespace Store.Migrations
                     b.HasIndex("ProductID");
 
                     b.ToTable("CartLine");
+                });
+
+            modelBuilder.Entity("Store.Models.Category", b =>
+                {
+                    b.Property<int>("CategoryID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ParentCategoryID")
+                        .HasColumnType("int");
+
+                    b.HasKey("CategoryID");
+
+                    b.HasIndex("ParentCategoryID");
+
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Store.Models.Order", b =>
@@ -103,15 +123,17 @@ namespace Store.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("CategoryID")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImagePath")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LongDescription")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -123,7 +145,49 @@ namespace Store.Migrations
 
                     b.HasKey("ProductID");
 
+                    b.HasIndex("CategoryID");
+
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("Store.Models.SpecificationField", b =>
+                {
+                    b.Property<int>("SpecificationFieldID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("SpecificationFieldID");
+
+                    b.ToTable("SpecificationFields");
+                });
+
+            modelBuilder.Entity("Store.Models.SpecificationFieldValue", b =>
+                {
+                    b.Property<int>("SpecificationFieldValueID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ProductID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SpecificationFieldID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("SpecificationFieldValueID");
+
+                    b.HasIndex("ProductID");
+
+                    b.HasIndex("SpecificationFieldID");
+
+                    b.ToTable("SpecificationFieldValues");
                 });
 
             modelBuilder.Entity("Store.Models.CartLine", b =>
@@ -135,6 +199,35 @@ namespace Store.Migrations
                     b.HasOne("Store.Models.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductID");
+                });
+
+            modelBuilder.Entity("Store.Models.Category", b =>
+                {
+                    b.HasOne("Store.Models.Category", "ParentCategory")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentCategoryID");
+                });
+
+            modelBuilder.Entity("Store.Models.Product", b =>
+                {
+                    b.HasOne("Store.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Store.Models.SpecificationFieldValue", b =>
+                {
+                    b.HasOne("Store.Models.Product", null)
+                        .WithMany("Specification")
+                        .HasForeignKey("ProductID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Store.Models.SpecificationField", "SpecificationField")
+                        .WithMany()
+                        .HasForeignKey("SpecificationFieldID");
                 });
 #pragma warning restore 612, 618
         }

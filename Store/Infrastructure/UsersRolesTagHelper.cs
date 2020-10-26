@@ -11,8 +11,8 @@ namespace Store.Infrastructure
     [HtmlTargetElement("td", Attributes = "identity-role")]
     public class UsersRolesTagHelper : TagHelper
     {
-        private UserManager<User> userManager;
-        private RoleManager<IdentityRole> roleManager;
+        private readonly UserManager<User> userManager;
+        private readonly RoleManager<IdentityRole> roleManager;
 
         public UsersRolesTagHelper(UserManager<User> uManager, RoleManager<IdentityRole> rManager)
         {

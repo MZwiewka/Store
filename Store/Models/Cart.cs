@@ -7,7 +7,7 @@ namespace Store.Models
 {
     public class Cart
     {
-        private List<CartLine> lineCollection = new List<CartLine>();
+        private readonly List<CartLine> lineCollection = new List<CartLine>();
 
         public virtual void AddItem(Product product, int quantity)
         {
@@ -44,7 +44,7 @@ namespace Store.Models
     public class CartLine
     {
         public int CartLineID { get; set; }
-        public Product Product { get; set; }
+        public virtual Product Product { get; set; }
         public int Quantity { get; set; }
     }
 }

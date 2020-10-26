@@ -1,0 +1,19 @@
+﻿@model EditCategoryViewModel
+
+@{ ViewBag.Title = "Create Category";
+                Layout = "_AdminLayout"; }
+
+    <form asp-action="EditCategory" method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="@Model.Category.CategoryID" />
+        <div class="form-group mt-3">
+            <label asp-for="@Model.Category.Name"></label>
+            <div><span asp-validation-for="@Model.Category.Name" class="text-danger"></span></div>
+            <input asp-for="@Model.Category.Name" class="form-control" />
+        </div>
+        <select asp-for="@Model.Category.ParentCategoryID" class="form-control" asp-items="@Model.Categories">
+        </select>
+        <div class="text-center">
+            <button class="btn btn-primary" type="submit">Save</button>
+            <a asp-action="ListCategories" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>

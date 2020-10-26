@@ -20,11 +20,10 @@
             <td class="text-right">@user.Email</td>
             <td class="text-center">
                 <form asp-action="DeleteUser" method="post">
-                    <a asp-action="EditUser" class="btn btn-sm btn-warning"
-                       asp-route-Id="@user.Id">
+                    <a asp-action="EditUser" asp-route-id="@user.Id" class="btn btn-sm btn-warning">
                         Edit
                     </a>
-                    <input type="hidden" name="Id" value="@user.Id" />
+                    <input type="hidden" name="id" value="@user.Id" />
                     <button type="submit" class="btn btn-danger btn-sm">
                         Delete
                     </button>

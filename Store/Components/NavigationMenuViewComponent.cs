@@ -10,7 +10,7 @@ namespace Store.Components
 {
     public class NavigationMenuViewComponent : ViewComponent
     {
-        private IProductRepository repository;
+        private readonly IProductRepository repository;
 
         public NavigationMenuViewComponent(IProductRepository repo)
         {
@@ -19,7 +19,7 @@ namespace Store.Components
         public IViewComponentResult Invoke()
         {
             ViewBag.SelectedCategory = RouteData?.Values["category"];
-            return View(repository.Products.Select(x => x.Category).Distinct().OrderBy(x => x));
+            return View(repository.Products.Select(x => x.Category.Name).Distinct().OrderBy(x => x));
         }
     }
 }

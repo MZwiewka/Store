@@ -10,8 +10,8 @@ namespace Store.Controllers
 {
     public class OrderController : Controller
     {
-        private IOrderRepository repository;
-        private Cart cart;
+        private readonly IOrderRepository repository;
+        private readonly Cart cart;
 
         public OrderController (IOrderRepository repo, Cart c)
         {

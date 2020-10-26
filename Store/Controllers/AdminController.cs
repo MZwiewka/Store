@@ -11,6 +11,9 @@ using System.Drawing;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using System.Dynamic;
+using Store.Models.ViewModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Store.Controllers
 {
@@ -18,13 +21,13 @@ namespace Store.Controllers
     //[Authorize]
     public class AdminController : Controller
     {
-        private IProductRepository repository;
-        private UserManager<User> userManager;
-        private IPasswordValidator<User> passwordValidator;
-        private IPasswordHasher<User> passwordHasher;
-        private IUserValidator<User> userValidator;
-        private RoleManager<IdentityRole> roleManager;
-        private IWebHostEnvironment environment;
+        private readonly IProductRepository repository;
+        private readonly UserManager<User> userManager;
+        private readonly IPasswordValidator<User> passwordValidator;
+        private readonly IPasswordHasher<User> passwordHasher;
+        private readonly IUserValidator<User> userValidator;
+        private readonly RoleManager<IdentityRole> roleManager;
+        private readonly IWebHostEnvironment environment;
 
         public AdminController(IProductRepository repo, UserManager<User> uManager, IUserValidator<User> uValidator, IPasswordValidator<User> pValidator, IPasswordHasher<User> pHasher, RoleManager<IdentityRole> rManager, IWebHostEnvironment env)
         {
@@ -37,35 +40,105 @@ namespace Store.Controllers
             environment = env;
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> AddSpecificationField(EditProductViewModel model)
+        {
+            model.Product.Specification.Add(new SpecificationFieldValue());
+            return PartialView("SpecificationFieldValues", model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> DeleteLastElement(EditProductViewModel model)
+        {
+            model.Product.Specification.Remove(model.Product.Specification.Last());
+            return View("EditProduct", model);
+        }
+
+        //Categories
+
+        public ViewResult ListCategories() => View(repository.Categories);
+
+        public ViewResult CreateCategory() => View("EditCategory", new EditCategoryViewModel(new Category(), new SelectList(repository.Categories.ToList(), "CategoryID", "Name")));
+
+        public ViewResult EditCategory(int categoryId)
+        {
+            var categories = repository.Categories.ToList();
+
+            EditCategoryViewModel model = new EditCategoryViewModel(
+
+             repository.Categories.FirstOrDefault(p => p.CategoryID == categoryId),
+             new SelectList(categories, "CategoryID", "Name")
+           );
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult EditCategory(Category category)
+        {
+            if (ModelState.IsValid)
+            {
+                repository.SaveCategory(category);
+                TempData["message"] = $"{category.Name} has been saved";
+                return RedirectToAction("ListCategories");
+            }
+            else
+            {
+                return View(category);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult DeleteCategory(int categoryId)
+        {
+            Category category = repository.DeleteCategory(categoryId);
+            if (category != null)
+            {
+                TempData["message"] = $"{category.Name} was deleted";
+            }
+            return RedirectToAction("ListCategories");
+        }
+
         //Products
 
         public ViewResult ListProducts() => View(repository.Products);
 
         public ViewResult CreateProduct() => View("EditProduct", new Product());
 
-        public ViewResult EditProduct(int productID) =>
-            View(repository.Products.FirstOrDefault(p => p.ProductID == productID));
+        public ViewResult EditProduct(int productID)
+        {
+
+            var fields = repository.SpecificationFields.ToList();
+            var categories = repository.Categories.Where(p => p.Children.Count == 0).ToList();
+            EditProductViewModel model = new EditProductViewModel
+            {
+                Product = repository.Products.FirstOrDefault(p => p.ProductID == productID),
+                Categories = new SelectList(categories, "CategoryID", "Name")
+            };
+
+            return View(model);
+        }
 
         [HttpPost]
-        public IActionResult EditProduct(Product product, IFormFile img)
+        public async Task<IActionResult> EditProduct(Product product, IFormFile img)
         {
             if (ModelState.IsValid)
             {
+
                 if (img != null)
                 {
                     string imagePath = $"{environment.ContentRootPath}\\MyStaticFiles\\Images\\Products\\{product.Name}";
                     Directory.CreateDirectory(imagePath);
                     product.ImagePath = $"/MyImages/Products/{product.Name}/picture.jpg";
-                    using (FileStream x = new FileStream($"{imagePath}\\picture.jpg", FileMode.Create, FileAccess.Write))
-                    {
-                        img.CopyTo(x);
-
-                    }
+                    using FileStream x = new FileStream($"{imagePath}\\picture.jpg", FileMode.Create, FileAccess.Write);
+                    img.CopyTo(x);
                 }
                 else if (product.ImagePath == null)
                 {
                     product.ImagePath = "/MyImages/Products/default.png";
                 }
+
                 repository.SaveProduct(product);
                 TempData["message"] = $"{product.Name} has been saved";
                 return RedirectToAction("ListProducts");

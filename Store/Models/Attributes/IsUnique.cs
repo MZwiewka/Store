@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Mvc;
 
 namespace Store.Models.Attributes
 {
@@ -13,8 +12,7 @@ namespace Store.Models.Attributes
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             var repository = (IProductRepository)validationContext.GetService(typeof(IProductRepository));
-            var product = validationContext.ObjectInstance as Product;
-            if (product == null) return new ValidationResult("Model is empty");
+            if (!(validationContext.ObjectInstance is Product product)) return new ValidationResult("Model is empty");
             var prod = repository.Products.FirstOrDefault(p => p.Name == (string)value && p.ProductID!= product.ProductID);
 
             if (prod == null)

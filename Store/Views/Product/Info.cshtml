@@ -1,8 +1,94 @@
 ﻿@model Product
+
 @{
-    ViewBag.Title = "@Model.Name";
+    ViewData["Title"] = @Model.Name;
     Layout = "_Layout";
 }
 
+    <ol class="breadcrumb m-1 p-1">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        @{ var obj = Model.Category.ParentCategory;
+            Stack<string> x = new Stack<string>();
+        }
+        @while (obj != null)
+        {
+            x.Push(obj.Name);
+            obj = obj.ParentCategory;
+        }
 
-@Model.Name
+        @foreach (var p in x)
+        {
+            
+            <li class="breadcrumb-item"><a href="/@p">@p</a></li>
+
+        }
+
+        <li class="breadcrumb-item"><a href="/@Model.Category.Name">@Model.Category.Name</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+    </ol>
+
+<div class="card m-1 p-1">
+    <div class="row">
+        <div class="col-md-auto" style="margin-right:0; padding-right:0">
+            <img src="@Model.ImagePath" class="img-responsive" style="width: 200px">
+        </div>
+        <div class="col">
+            <div class="bg-light p-1">
+                <h4>
+                    <a class="btn font-weight-bold text-uppercase">@Model.Name</a>
+                    <span class="badge badge-dark" style="        float: right
+">
+                        <small>@Model.Price.ToString("c")</small>
+                    </span>
+                </h4>
+            </div>
+            <form id="@Model.ProductID" asp-action="AddToCart"
+                  asp-controller="Cart" method="post">
+                <input type="hidden" asp-for="ProductID" />
+                <input type="hidden" name="returnUrl"
+                       value="@ViewContext.HttpContext.Request.PathAndQuery()" />
+                <span class="card-text ml-2 p-2">
+                    @Model.Description
+                    <button type="submit"
+                            class="btn btn-success btn-sm pull-right" style="float:right">
+                        Add To Cart
+                    </button>
+                </span>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="card m-1 p-1">
+    <h3>Description:</h3>
+    @Model.LongDescription
+</div>
+
+<div class="card m-1 p-1">
+    <h3 class="card-title title-copy-sub-page">Specification:</h3>
+    <div class="specification-table">
+        <h5 class="spec-title hidden-xs text-center">PRODUCT</h5>
+        <div class="table-info hidden-xs">
+
+            @for (int i=0; i< Model.Specification.Count(); i++)
+            {
+
+                <div class="" style="border-bottom: 1px solid #e2e2e2; background-color: white">
+                    <div class="row">
+                        <div class="col pr-0 mr-2">
+                            <div class="text-right">@Model.Specification.ElementAt(i).SpecificationField.Name</div>
+                        </div>
+                        <div class="col pl-0 ml-2">
+                            <div class="text-left">@Model.Specification.ElementAt(i).Value</div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+<div class="card m-1 p-1">
+    <h3>Opinions:</h3>
+</div>
